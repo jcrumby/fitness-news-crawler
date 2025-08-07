@@ -1,1 +1,1 @@
-My First Ever Automated Email Report - Uses Gemini, crawl4ai to scrape 3 websites for articles within the last week and emails a summary weekly. 
+My First Ever Automated Email Report - Uses Gemini, crawl4ai to scrape 3 fitness industry news websites for articles within the last 7 days, and emails scheduled weekly summary to a recipient as a formatted plain text email. 
