@@ -15,6 +15,4 @@ lxml
 schedule
 jinja2
 markdown
-datetime
-json
-yaml
+pyyaml
