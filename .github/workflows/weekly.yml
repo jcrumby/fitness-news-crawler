@@ -1,28 +1,20 @@
-name: Weekly Fitness Summary
+name: Run Weekly Fitness Crawler
 
 on:
   schedule:
-    - cron: '0 15 * * 4'  # Every Thursday at 15:00 (3PM) GMT
-  workflow_dispatch:      # Allow manual runs too
+    - cron: '0 15 * * 4'  # Every Thursday at 15:00 GMT
+  workflow_dispatch:
 
 jobs:
-  run-weekly-report:
+  run-crawler:
     runs-on: ubuntu-latest
-
-    env:
-      EMAIL_USER: ${{ secrets.EMAIL_USER }}
-      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-      EMAIL_TO: ${{ secrets.EMAIL_TO }}
-      SMTP_SERVER: smtp.gmail.com
-      SMTP_PORT: 587
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -31,5 +23,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run weekly crawler
+      - name: Install Playwright browsers
+        run: playwright install
+
+      - name: Run crawler
         run: python crawler/weekly_crawler.py
+
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: 587
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
