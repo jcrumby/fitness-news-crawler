@@ -2,7 +2,7 @@ name: Weekly Fitness Crawler
 
 on:
   schedule:
-    - cron: '0 15 * * 4'  # Every Thursday at 15:00 GMT
+    - cron: "*/5 * * * *"  # Runs every 5 minutes for testing
   workflow_dispatch:
 
 jobs:
