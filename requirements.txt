@@ -15,7 +15,6 @@ lxml
 schedule
 jinja2
 markdown
-email
 datetime
 json
 yaml
