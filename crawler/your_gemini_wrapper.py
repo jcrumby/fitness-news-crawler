@@ -72,3 +72,16 @@ def gemini_summarize(article_markdowns: list) -> str:
 
     response = model.generate_content(prompt)
     return response.text.strip()
+
+def gemini_extract_companies(summary_md: str) -> str:
+    prompt = (
+        "You are a research analyst reading the following weekly industry summary.\n\n"
+        "Please extract a list of all companies mentioned in the summary.\n"
+        "- Include company names only (no extra commentary).\n"
+        "- Return a comma-separated (', ') plain text list.\n"
+        "- Avoid duplicate names.\n\n"
+        f"Here is the summary:\n\n{summary_md}"
+    )
+
+    response = model.generate_content(prompt)
+    return response.text.strip()

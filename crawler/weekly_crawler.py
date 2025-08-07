@@ -1,6 +1,6 @@
 import asyncio
 from crawl4ai import AsyncWebCrawler
-from your_gemini_wrapper import gemini_extract_links, gemini_summarize
+from your_gemini_wrapper import gemini_extract_links, gemini_summarize, gemini_extract_companies
 from email_sender import send_markdown_email
 
 LISTING_URLS = [
@@ -35,10 +35,18 @@ async def main():
         print("📦 Sending all article markdowns to Gemini for summarization...")
         summary = gemini_summarize(all_article_markdowns)
 
-        with open("weekly_summary.md", "w", encoding="utf-8") as f:
-            f.write(summary)
+        # Extract company names from the Gemini summary
+        companies = gemini_extract_companies(summary)
 
-        print("✅ Saved summary to weekly_summary.md")
+        # Append companies section
+        final_summary = summary + "\n\n---\n\n**Companies Mentioned This Week:**\n" + companies
+
+        # Write to markdown file
+        with open("weekly_summary.md", "w", encoding="utf-8") as f:
+            f.write(final_summary)
+
+        print("✅ Saved final summary with companies to weekly_summary.md")
+
     else:
         print("⚠️ No articles were successfully crawled.")
 
