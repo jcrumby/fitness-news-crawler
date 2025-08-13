@@ -6,6 +6,8 @@ from email_sender import send_markdown_email
 LISTING_URLS = [
     "https://insider.fitt.co/articles/",
     "https://athletechnews.com/all-news/",
+    "https://athletechnews.com/all-news/page/2/",
+    "https://athletechnews.com/all-news/page/3/",
     "https://www.healthclubmanagement.co.uk/health-club-management-news"
 ]
 
@@ -25,7 +27,7 @@ async def main():
             article_urls = gemini_extract_links(listing_md)
             print(f"🔗 Found {len(article_urls)} articles")
 
-            for url in article_urls:
+            for url in article_urls[:15]:
                 print(f"📰 Crawling article: {url}")
                 article_md = await crawl_markdown(crawler, url)
                 if article_md:
