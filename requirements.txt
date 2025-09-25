@@ -1,5 +1,5 @@
 # Crawl4AI (for website crawling)
-crawl4ai
+crawl4ai==0.7.2
 
 # Gemini API (for LLM insight processing)
 google-generativeai

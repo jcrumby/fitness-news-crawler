@@ -1,7 +1,9 @@
 import asyncio
+import json
+import re
 from crawl4ai import AsyncWebCrawler
 from your_gemini_wrapper import gemini_extract_links, gemini_summarize, gemini_extract_companies
-from email_sender import send_markdown_email
+from email_sender import send_json_email
 
 LISTING_URLS = [
     "https://insider.fitt.co/articles/",
@@ -37,22 +39,30 @@ async def main():
         print("📦 Sending all article markdowns to Gemini for summarization...")
         summary = gemini_summarize(all_article_markdowns)
 
-        # Extract company names from the Gemini summary
+        # Remove code block markers if present
+        summary_clean = re.sub(r"^```json\s*|\s*```$", "", summary.strip(), flags=re.DOTALL)
+
+        # Parse JSON
+        summary_json = json.loads(summary_clean)
+
+        # Optionally extract company names and add to summary_json
         companies = gemini_extract_companies(summary)
+        summary_json["companies"] = companies
 
-        # Append companies section
-        final_summary = summary + "\n\n---\n\n**Companies Mentioned This Week:**\n" + companies
+        # Save JSON to file (optional)
+        with open("weekly_summary.json", "w", encoding="utf-8") as f:
+            json.dump(summary_json, f, indent=2)
 
-        # Write to markdown file
-        with open("weekly_summary.md", "w", encoding="utf-8") as f:
-            f.write(final_summary)
+        print("✅ Saved final summary with companies to weekly_summary.json")
 
-        print("✅ Saved final summary with companies to weekly_summary.md")
+        # Send email using the new function
+        send_json_email(summary_json)
 
     else:
         print("⚠️ No articles were successfully crawled.")
 
 if __name__ == "__main__":
     asyncio.run(main())                  # Run the full async crawl/summarize
-    send_markdown_email("weekly_summary.md")  # Then email the final summary
+  
+
 
